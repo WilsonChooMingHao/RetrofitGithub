@@ -1,10 +1,12 @@
 package com.wilsonchoominghao.retrofitgithub;
 
+import android.app.Service;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.wilsonchoominghao.retrofitgithub.api.ServiceGenerator;
 import com.wilsonchoominghao.retrofitgithub.api.model.GitHubRepo;
 import com.wilsonchoominghao.retrofitgithub.api.service.GitHubClient;
 import com.wilsonchoominghao.retrofitgithub.ui.adapter.GitHubRepoAdapter;
@@ -20,9 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
 {
-	String API_BASE_URL = "https://api.github.com/";
-	OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
 	private ListView listView;
 
 	@Override
@@ -33,15 +32,7 @@ public class MainActivity extends AppCompatActivity
 
 		listView = (ListView) findViewById(R.id.pagination_list);
 
-		Retrofit.Builder builder = new Retrofit.Builder()
-				.baseUrl(API_BASE_URL)
-				.addConverterFactory(GsonConverterFactory.create());
-
-		Retrofit retrofit = builder
-				.client(httpClient.build())
-				.build();
-
-		GitHubClient gitHubClient = retrofit.create(GitHubClient.class);
+		GitHubClient gitHubClient = ServiceGenerator.createService(GitHubClient.class);
 		Call<List<GitHubRepo>> call = gitHubClient.reposForUser("WilsonChooMingHao");
 
 		call.enqueue(new Callback<List<GitHubRepo>>()
